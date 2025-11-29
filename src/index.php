@@ -1,6 +1,6 @@
 <?php
     session_start();
-    require_once("includes/conexion.php"); 
+    require_once("includes/database.php"); 
 
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $email = $_POST['email'];
@@ -10,31 +10,36 @@
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             $mensaje = "Correo Invalido";
         }else{
-            //buscar si el correo existe en la base de datos
-            $sql = "SELECT nombre, clave, rol FROM usuarios WHERE correo = ?";
-            $stmt = $mysqli->prepare($sql);
-            $stmt->bind_param("s",$email);
-            $stmt->execute();
 
-            $resultado = $stmt->get_result();
+            try{
+                $database = new Database();
+                $db = $database->getConnection();
 
-            if($resultado->num_rows === 1){
-                $usuario = $resultado->fetch_assoc();
+                //buscar si el correo existe en la base de datos
+                $sql = "SELECT nombre, clave, rol FROM usuarios WHERE correo = :correo";
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(":correo",$email);
+                $stmt->execute();
 
-                if(password_verify($pass, $usuario['clave'])){
-                    $_SESSION['nombre_usuario'] = $usuario['nombre'];
-                    $_SESSION['rol'] = $usuario['rol'];
-                    $_SESSION['correo'] = $email;
+                $resultado = $stmt->fetchAll();
 
-                    header("Location: home.php");
-                    exit();
+                if($resultado.ob_get_length() ===1){
+                    foreach($resultado as $usuario){
+                        if(password_verify($pass, $usuario['clave'])){
+                            $_SESSION['nombre_usuario'] = $usuario['nombre'];
+                            $_SESSION['rol'] = $usuario['rol'];
+                            $_SESSION['correo'] = $email;
+
+                            header("Location: home.php");
+                            exit();
+                        }
+                    }
+                }else{
+                    $mensaje = "Correo no registrado";
                 }
+            }catch(Exception $e){
 
-            }else{
-                $mensaje = "Correo no registrado";
             }
-            $stmt->close();
-            $mysqli->close();
         }
 
     }

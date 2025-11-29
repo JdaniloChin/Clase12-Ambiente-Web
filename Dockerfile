@@ -5,14 +5,14 @@ FROM php:8.2-apache
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
 #Habilitar mod_rewrite 
-RUN a2enmod mod_rewrite
+RUN a2enmod rewrite
 
 #configurar apache para permitir .htaccess
 RUN echo  '<Directory /var/www/html>\n\
         AllowOverride All\n\
         Require all granted\n\
-        </Directory>' > /etc/apache2/conf-availabe/override.conf && \
-        a3enconf override
+        </Directory>' > /etc/apache2/conf-available/override.conf && \
+        a2enconf override
 
 # copiar codigo fuente
 COPY src/ /var/www/html
