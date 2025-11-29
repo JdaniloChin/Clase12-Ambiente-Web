@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  #Servicio PHP con Apache
+  web:
+    build: .
+    container_name: tienda_app
+    ports: 
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DD_NAME=tienda_app
+      - DB_USER=root
+      - DB_PASS=rootpassword
+    networks:
+      - tienda_network
+    
+  # Servicio MySQL
+  db:
+    image: mysql:8.0
+    container_name: tienda_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: tienda_app
+      MYSQL_USER: api_user
+      MYSQL_PASSWORD: api_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - tienda_network
+
+  # phpMyAdmin para administrar la base de datos
+  phpMyAdmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: tienda_phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    depends_on:
+      - db
+    networks:
+      - tienda_network
+    
+volumes:
+  mysql_data:
+
+networks:
+  tienda_network:
+    driver: bridge

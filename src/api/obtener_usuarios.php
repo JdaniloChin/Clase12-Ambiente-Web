@@ -1,12 +1,20 @@
 <?php
-       require_once("../includes/conexion.php"); 
+       require_once("../includes/database.php"); 
 
    
-   $resultado = $stmt = $mysqli->query("SELECT id_usuario,nombre,usuario,correo,rol,estado FROM usuarios");
-   if($resultado && $resultado->num_rows >0){
-    while($usuario = $resultado->fetch_assoc()){
+    try{
+        $database = new Database();
+        $db = $database->getConnection();
+        $query = "SELECT id_usuario,nombre,usuario,correo,rol,estado FROM usuarios";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+
+        $resultado = $stmt->fetchAll();
+
+        if($resultado && $resultado.ob_get_length() >0){
+            foreach($resultado as $usuario){
       
-        echo  "<tr>
+                 echo  "<tr>
                             <td>". htmlspecialchars($usuario['nombre'])  . "</td>
                             <td>" . htmlspecialchars($usuario['usuario'])  . "</td>
                             <td>" . htmlspecialchars($usuario['correo'])  . "</td>
@@ -24,9 +32,17 @@
                                 <a href='#' data-id='{$usuario['id_usuario']}' class='btn btn-danger btn-sm btnEliminar'>Eliminar</a>
                             </td>
                         </tr>";
+            }
+         }
+
+    }catch(Exception $e){
+        error_log("Error al obtener usuarios: " . $e->getMessage());
+
     }
-   }
-   $stmt->close();
-   $mysqli->close();
+
+   
+
+
+
 
 ?>
