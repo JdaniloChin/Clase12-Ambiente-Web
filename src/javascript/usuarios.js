@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let html='';
 
             if(data && data.length > 0){
-                data.foreach(usuario => {
+                data.forEach(usuario => {
                     html += `<tr>
                             <td> ${usuario.nombre}</td>
                             <td> ${usuario.usuario}</td>
