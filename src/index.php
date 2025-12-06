@@ -23,7 +23,7 @@
 
                 $resultado = $stmt->fetchAll();
 
-                if($resultado.ob_get_length() ===1){
+                if(count($resultado) ===1){
                     foreach($resultado as $usuario){
                         if(password_verify($pass, $usuario['clave'])){
                             $_SESSION['nombre_usuario'] = $usuario['nombre'];

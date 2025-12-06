@@ -11,7 +11,7 @@
 
         $resultado = $stmt->fetchAll();
 
-        if($resultado && $resultado.ob_get_length() >0){
+        if($resultado && count($resultado)  >0){
             foreach($resultado as $usuario){
       
                  echo  "<tr>
