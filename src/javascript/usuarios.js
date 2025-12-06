@@ -51,8 +51,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function cargarUsuarios(){
         $.get('./api/obtener_usuarios.php', function(data){
-            $('#tablaUsuarios tbody').html(data);
-        });
+            let html='';
+
+            if(data && data.length > 0){
+                data.foreach(usuario => {
+                    html += `<tr>
+                            <td> ${usuario.nombre}</td>
+                            <td> ${usuario.usuario}</td>
+                            <td> ${usuario.correo}</td>
+                            <td> ${usuario.rol}</td>
+                            <td> ${usuario.estado}</td>
+                            <td>
+                                <a href='#'
+                                data-id='${usuario.id_usuario}'
+                                data-nombre='${usuario.nombre}'
+                                data-usuario='${usuario.usuario}'
+                                data-correo='${usuario.correo}'
+                                data-rol='${usuario.rol}'
+                                data-estado='${usuario.estado}'
+                                class='btn btn-warning btn-sm btnEditar'>Editar</a>
+                                <a href='#' data-id='${usuario.id_usuario}' class='btn btn-danger btn-sm btnEliminar'>Eliminar</a>
+                            </td>
+                        </tr>`;
+                });
+            }
+            $('#tablaUsuarios tbody').html(html);
+        }, 'json');
     }
 
     //Guardar usuario /ajax
