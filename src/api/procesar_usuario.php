@@ -70,7 +70,11 @@
             $usuario = new Usuario($db);
             $usuario->id_usuario = $id;
 
-            $usuario->eliminarUsuario();
+            if($usuario->eliminarUsuario()){
+                echo "Usuario " . $id . " eliminado correctamente";
+            }else{
+                echo "Error al eliminar el usuario: " .$id;
+            }
             exit();
 
         }catch(Exception $e){

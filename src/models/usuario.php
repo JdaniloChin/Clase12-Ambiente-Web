@@ -114,7 +114,12 @@ class Usuario{
         $sql= "DELETE FROM usuarios WHERE id_usuario = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam('id',$this->id_usuario);
-        $stmt->execute();
+        
+        if($stmt->execute()){
+            return true;
+        }
+
+        return false;
     }
 }
 ?>
