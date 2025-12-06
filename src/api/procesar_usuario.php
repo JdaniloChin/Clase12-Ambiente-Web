@@ -66,10 +66,11 @@
         try{
             $database = new Database();
             $db = $database->getConnection();
-            $sql= "DELETE FROM usuarios WHERE id_usuario = :id";
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam('id',$id);
-            $stmt->execute();
+           
+            $usuario = new Usuario($db);
+            $usuario->id_usuario = $id;
+
+            $usuario->eliminarUsuario();
             exit();
 
         }catch(Exception $e){

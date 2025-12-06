@@ -105,5 +105,16 @@ class Usuario{
 
          return false;
     }
+
+    /**
+     * Eliminar usuario
+     */
+
+    public function eliminarUsuario(){
+        $sql= "DELETE FROM usuarios WHERE id_usuario = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam('id',$this->id_usuario);
+        $stmt->execute();
+    }
 }
 ?>
